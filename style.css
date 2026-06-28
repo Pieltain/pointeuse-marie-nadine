@@ -1,5 +1,10 @@
 * { box-sizing: border-box; }
 
+:root {
+  --accent: #238636;
+  --accent-soft: #e7f4ea;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -10,12 +15,8 @@ body {
   justify-content: center;
 }
 
-.app {
-  width: 100%;
-  padding: 16px;
-}
+.app { width: 100%; padding: 16px; }
 
-/* Compatible avec l'ancien nom .card et le nouveau nom .terminal */
 .terminal,
 .card {
   width: 100%;
@@ -26,6 +27,7 @@ body {
   padding: 28px;
   text-align: center;
   box-shadow: 0 12px 35px rgba(0,0,0,.20);
+  border-top: 10px solid var(--accent);
 }
 
 .top,
@@ -56,10 +58,21 @@ h1 {
   letter-spacing: .5px;
 }
 
-.clock {
-  font-size: 46px;
+.employee-badge {
+  display: inline-block;
+  margin: 8px 0 2px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 20px;
   font-weight: 800;
-  margin: 8px 0 22px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.clock {
+  font-size: 44px;
+  font-weight: 800;
+  margin: 10px 0 22px;
 }
 
 .label {
@@ -70,14 +83,19 @@ h1 {
   margin: 12px 0 6px;
 }
 
-.select,
-.input {
+.select, .input {
   width: 100%;
   font-size: 25px;
   padding: 15px;
   border-radius: 16px;
   border: 2px solid #cfd6dd;
   background: white;
+}
+
+.select:focus,
+.input:focus {
+  outline: 3px solid var(--accent-soft);
+  border-color: var(--accent);
 }
 
 .pin-display,
@@ -111,6 +129,11 @@ h1 {
   cursor: pointer;
 }
 
+.keypad button:active {
+  transform: scale(.98);
+  background: var(--accent-soft);
+}
+
 .big,
 .btn {
   width: 100%;
@@ -125,7 +148,7 @@ h1 {
 
 .arrival,
 .arrivee {
-  background: #238636;
+  background: var(--accent);
 }
 
 .departure,
@@ -177,9 +200,7 @@ h1 {
   justify-content: center;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
 
 .panel,
 .modal-content {
@@ -238,4 +259,17 @@ h1 {
   padding: 12px;
   font-size: 20px;
   line-height: 1.6;
+}
+
+.employee-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
 }

@@ -40,9 +40,34 @@ function jsonp(params) {
 
 function selectedEmployeeId() { return $("employeeSelect").value; }
 
+function selectedEmployee() {
+  return employees.find(e => String(e.id) === String(selectedEmployeeId()));
+}
+
 function selectedEmployeeName() {
-  const option = $("employeeSelect").selectedOptions[0];
-  return option ? option.textContent : "";
+  const emp = selectedEmployee();
+  return emp ? emp.name : "";
+}
+
+function setEmployeeTheme() {
+  const emp = selectedEmployee();
+  const color = emp && (emp.color || emp.couleur) ? (emp.color || emp.couleur) : "#238636";
+
+  document.documentElement.style.setProperty("--accent", color);
+  document.documentElement.style.setProperty("--accent-soft", makeSoftColor(color));
+
+  $("employeeBadge").innerText = emp ? emp.name : "—";
+}
+
+function makeSoftColor(hex) {
+  if (!hex || !hex.startsWith("#") || hex.length !== 7) return "#e7f4ea";
+
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  const mix = (c) => Math.round(c + (255 - c) * 0.86);
+  return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`;
 }
 
 function disableClockButtons() {
@@ -137,15 +162,25 @@ async function loadEmployees() {
       select.appendChild(option);
     });
 
-    $("employeeList").innerHTML = employees.map(e => "• " + e.name).join("<br>");
+    renderEmployeeList();
+    setEmployeeTheme();
     await loadLastClocking();
   } catch(e) {
     setMessage("Erreur employés");
   }
 }
 
+function renderEmployeeList() {
+  $("employeeList").innerHTML = employees.map(e => {
+    const color = e.color || e.couleur || "#218838";
+    return `<div class="employee-item"><span class="color-dot" style="background:${color}"></span>${e.name}</div>`;
+  }).join("");
+}
+
 async function loadLastClocking() {
   clearPin();
+  setEmployeeTheme();
+
   const employeeId = selectedEmployeeId();
   if (!employeeId) return;
 
