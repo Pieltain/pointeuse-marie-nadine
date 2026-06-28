@@ -9,7 +9,11 @@
 <body>
   <main class="app">
     <section class="card">
-      <div class="version">v2.0.1</div>
+      <div class="topbar">
+        <button class="admin-link" onclick="ouvrirAdmin()">⚙️ Admin</button>
+        <div class="version">v2.2</div>
+      </div>
+
       <h1>POINTEUSE MC</h1>
       <div class="clock" id="horloge">--:--:--</div>
 
@@ -31,6 +35,47 @@
       </div>
     </section>
   </main>
+
+  <div id="adminModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close" onclick="fermerAdmin()">×</button>
+      <h2>Administration</h2>
+
+      <div id="adminLogin">
+        <label class="label">Mot de passe admin</label>
+        <input id="adminPassword" class="input" type="password" inputmode="numeric" placeholder="Mot de passe">
+        <button class="btn-small" onclick="connexionAdmin()">Se connecter</button>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <h3>Ajouter un employé</h3>
+
+        <label class="label">Nom</label>
+        <input id="newNom" class="input" type="text" placeholder="Nom de l'employé">
+
+        <label class="label">PIN</label>
+        <input id="newPin" class="input" type="text" inputmode="numeric" maxlength="6" placeholder="Ex : 1234">
+
+        <label class="checkline">
+          <input id="newActif" type="checkbox" checked>
+          Actif
+        </label>
+
+        <label class="checkline">
+          <input id="newAdmin" type="checkbox">
+          Administrateur
+        </label>
+
+        <button class="btn-small" onclick="ajouterEmploye()">Ajouter l'employé</button>
+
+        <div id="adminMessage" class="admin-message"></div>
+
+        <h3>Employés actifs</h3>
+        <div id="listeEmployes" class="liste-employes">Chargement...</div>
+      </div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
