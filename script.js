@@ -10,6 +10,32 @@ function majHorloge() {
     });
 }
 
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const callbackName = "jsonpCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+    const script = document.createElement("script");
+
+    params.callback = callbackName;
+
+    const query = new URLSearchParams(params).toString();
+
+    window[callbackName] = function(data) {
+      delete window[callbackName];
+      script.remove();
+      resolve(data);
+    };
+
+    script.onerror = function() {
+      delete window[callbackName];
+      script.remove();
+      reject(new Error("Erreur JSONP"));
+    };
+
+    script.src = API_URL + "?" + query;
+    document.body.appendChild(script);
+  });
+}
+
 function employeSelectionne() {
   return document.getElementById("employeSelect").value;
 }
@@ -50,8 +76,7 @@ async function chargerEmployes() {
   select.innerHTML = "";
 
   try {
-    const response = await fetch(`${API_URL}?mode=employes`);
-    const employes = await response.json();
+    const employes = await jsonp({ mode: "employes" });
 
     if (!employes || employes.length === 0) {
       select.innerHTML = '<option value="">Aucun employé actif</option>';
@@ -89,8 +114,7 @@ async function chargerEtat() {
   document.getElementById("btnDepart").disabled = true;
 
   try {
-    const response = await fetch(`${API_URL}?nom=${encodeURIComponent(nom)}`);
-    const data = await response.json();
+    const data = await jsonp({ nom: nom });
     afficherDernier(data);
     setMessage("Prêt");
   } catch (error) {
