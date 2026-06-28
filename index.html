@@ -13,11 +13,15 @@
       <h1>POINTEUSE</h1>
       <h2>Marie-Nadine Payet</h2>
 
-      <button class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
-      <button class="btn depart" onclick="pointer('Départ')">DÉPART</button>
+      <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
+      <button id="btnDepart" class="btn depart" onclick="pointer('Départ')">DÉPART</button>
 
-      <div id="message" class="message">Prêt</div>
-      <div id="dernier" class="dernier"></div>
+      <div id="message" class="message">Chargement...</div>
+
+      <div class="last-card">
+        <div class="last-title">Dernier pointage</div>
+        <div id="dernier" class="dernier">—</div>
+      </div>
     </section>
   </main>
 
