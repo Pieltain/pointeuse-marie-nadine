@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pointeuse - Marie-Nadine Payet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="date" id="dateJour"></div>
+      <h1>POINTEUSE</h1>
+      <h2>Marie-Nadine Payet</h2>
+
+      <button class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
+      <button class="btn depart" onclick="pointer('Départ')">DÉPART</button>
+
+      <div id="message" class="message">Prêt</div>
+      <div id="dernier" class="dernier"></div>
+    </section>
+  </main>
+
+  <iframe name="hiddenFrame" style="display:none;"></iframe>
+  <script src="script.js"></script>
+</body>
+</html>

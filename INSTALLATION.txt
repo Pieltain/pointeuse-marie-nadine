@@ -1,0 +1,19 @@
+INSTALLATION RAPIDE
+
+1. Décompressez ce dossier.
+2. Créez un compte gratuit sur https://github.com
+3. Créez un nouveau dépôt public appelé : pointeuse-marie-nadine
+4. Envoyez les 3 fichiers suivants dans le dépôt :
+   - index.html
+   - style.css
+   - script.js
+5. Dans GitHub :
+   Settings > Pages
+   Source : Deploy from a branch
+   Branch : main
+   Folder : /root
+   Save
+6. Après 1 à 3 minutes, GitHub vous donnera une adresse du type :
+   https://votre-nom.github.io/pointeuse-marie-nadine/
+
+Ouvrez cette adresse sur la tablette.
