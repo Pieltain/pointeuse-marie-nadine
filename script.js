@@ -1,6 +1,10 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxxYGK_Xx-jkMD2vZjtDAQ6itiMuUPQXyAOR8u5Csa0Y1oPrxC02EvIoSYRvjgw9aiCCA/exec";
 const ADMIN_PASSWORD = "6690";
 
+let employesCache = [];
+let etatDernierAction = "";
+let pinValide = false;
+
 function majHorloge() {
   const maintenant = new Date();
   document.getElementById("horloge").innerText =
@@ -39,15 +43,31 @@ function employeSelectionne() {
   return document.getElementById("employeSelect").value;
 }
 
+function getEmployeCourant() {
+  const nom = employeSelectionne();
+  return employesCache.find(e => e.nom === nom);
+}
+
 function setMessage(texte) {
   document.getElementById("message").innerText = texte;
 }
 
-function reglerBoutons(dernierAction) {
+function boutonsInactifs() {
+  document.getElementById("btnArrivee").disabled = true;
+  document.getElementById("btnDepart").disabled = true;
+}
+
+function appliquerEtatBoutons() {
   const arrivee = document.getElementById("btnArrivee");
   const depart = document.getElementById("btnDepart");
 
-  if (dernierAction === "Arrivée") {
+  if (!pinValide) {
+    arrivee.disabled = true;
+    depart.disabled = true;
+    return;
+  }
+
+  if (etatDernierAction === "Arrivée") {
     arrivee.disabled = true;
     depart.disabled = false;
   } else {
@@ -61,45 +81,50 @@ function afficherDernier(data) {
 
   if (!data || !data.action) {
     dernier.innerText = "Aucun pointage";
-    reglerBoutons("Départ");
+    etatDernierAction = "Départ";
+    appliquerEtatBoutons();
     return;
   }
 
   dernier.innerText = `${data.date || ""}\n${data.heure || ""} - ${data.action}`;
-  reglerBoutons(data.action);
+  etatDernierAction = data.action;
+  appliquerEtatBoutons();
 }
 
 async function chargerEmployes() {
   setMessage("Chargement des employés...");
+  boutonsInactifs();
   const select = document.getElementById("employeSelect");
   select.innerHTML = "";
 
   try {
     const employes = await jsonp({ mode: "employes" });
+    employesCache = employes || [];
 
-    if (!employes || employes.length === 0) {
+    if (!employesCache.length) {
       select.innerHTML = '<option value="">Aucun employé actif</option>';
       setMessage("Aucun employé actif");
-      document.getElementById("btnArrivee").disabled = true;
-      document.getElementById("btnDepart").disabled = true;
       return;
     }
 
-    employes.forEach(emp => {
+    employesCache.forEach(emp => {
       const option = document.createElement("option");
       option.value = emp.nom;
       option.textContent = emp.nom;
       select.appendChild(option);
     });
 
+    afficherListeEmployes(employesCache);
     await chargerEtat();
-    afficherListeEmployes(employes);
   } catch (error) {
     select.innerHTML = '<option value="">Erreur de chargement</option>';
     setMessage("Erreur employés");
-    document.getElementById("btnArrivee").disabled = true;
-    document.getElementById("btnDepart").disabled = true;
   }
+}
+
+function changementEmploye() {
+  effacerPin();
+  chargerEtat();
 }
 
 function afficherListeEmployes(employes) {
@@ -110,28 +135,74 @@ function afficherListeEmployes(employes) {
 
 async function chargerEtat() {
   const nom = employeSelectionne();
+  pinValide = false;
+  boutonsInactifs();
+
   if (!nom) {
     setMessage("Aucun employé sélectionné");
     return;
   }
 
-  setMessage("Chargement...");
-  document.getElementById("btnArrivee").disabled = true;
-  document.getElementById("btnDepart").disabled = true;
+  setMessage("Entrez le PIN");
 
   try {
     const data = await jsonp({ nom: nom });
     afficherDernier(data);
-    setMessage("Prêt");
+    appliquerEtatBoutons();
   } catch (error) {
     document.getElementById("dernier").innerText = "Impossible de charger le dernier pointage";
-    document.getElementById("btnArrivee").disabled = false;
-    document.getElementById("btnDepart").disabled = false;
-    setMessage("Mode secours");
+    setMessage("Erreur de chargement");
   }
 }
 
+function ajouterChiffre(chiffre) {
+  const input = document.getElementById("pinInput");
+  if (input.value.length >= 6) return;
+  input.value += chiffre;
+  verifierPin();
+}
+
+function retourPin() {
+  const input = document.getElementById("pinInput");
+  input.value = input.value.slice(0, -1);
+  verifierPin();
+}
+
+function effacerPin() {
+  document.getElementById("pinInput").value = "";
+  pinValide = false;
+  appliquerEtatBoutons();
+  setMessage("Entrez le PIN");
+}
+
+function verifierPin() {
+  const emp = getEmployeCourant();
+  const pin = document.getElementById("pinInput").value;
+
+  if (!emp) {
+    pinValide = false;
+    appliquerEtatBoutons();
+    return;
+  }
+
+  if (pin && String(emp.pin) === pin) {
+    pinValide = true;
+    setMessage("PIN correct");
+  } else {
+    pinValide = false;
+    if (pin.length >= 4) setMessage("PIN incorrect");
+    else setMessage("Entrez le PIN");
+  }
+
+  appliquerEtatBoutons();
+}
+
 async function pointer(action) {
+  if (!pinValide) {
+    setMessage("PIN requis");
+    return;
+  }
+
   const nom = employeSelectionne();
   if (!nom) {
     setMessage("Choisis un employé");
@@ -155,7 +226,8 @@ async function pointer(action) {
 
     afficherDernier({ action, heure, date });
     setMessage("✔ Pointage envoyé");
-    setTimeout(() => setMessage("Prêt"), 3000);
+    effacerPin();
+
   } catch (error) {
     setMessage("Erreur d'envoi");
     await chargerEtat();
@@ -195,8 +267,8 @@ async function ajouterEmploye() {
     return;
   }
 
-  if (!pin) {
-    msg.innerText = "PIN obligatoire";
+  if (!/^\d{4,6}$/.test(pin)) {
+    msg.innerText = "PIN obligatoire : 4 à 6 chiffres";
     return;
   }
 
@@ -221,7 +293,6 @@ async function ajouterEmploye() {
     document.getElementById("newPin").value = "";
     document.getElementById("newActif").checked = true;
     document.getElementById("newAdmin").checked = false;
-
     setTimeout(chargerEmployes, 1200);
   } catch (error) {
     msg.innerText = "Erreur lors de l'ajout";

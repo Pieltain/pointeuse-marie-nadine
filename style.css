@@ -17,17 +17,12 @@ body {
   margin: auto;
   background: white;
   border-radius: 30px;
-  padding: 30px;
+  padding: 28px;
   text-align: center;
   box-shadow: 0 10px 35px rgba(0,0,0,0.18);
 }
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
+.topbar { display: flex; justify-content: space-between; align-items: center; }
 .version { font-size: 15px; color: #777; }
 
 .admin-link {
@@ -39,25 +34,21 @@ body {
   cursor: pointer;
 }
 
-h1 { font-size: 48px; margin: 5px 0 12px; }
+h1 { font-size: 46px; margin: 5px 0 10px; }
 
 .clock {
-  display: block;
-  font-size: 42px;
+  font-size: 38px;
   font-weight: bold;
-  margin: 0 0 24px;
+  margin-bottom: 20px;
   color: #222;
-  line-height: 1.2;
 }
-
-.employee-box { margin-top: 8px; margin-bottom: 20px; }
 
 .label {
   display: block;
   text-align: left;
   font-size: 20px;
   font-weight: bold;
-  margin: 12px 0 8px 4px;
+  margin: 10px 0 8px 4px;
   color: #333;
 }
 
@@ -65,19 +56,47 @@ h1 { font-size: 48px; margin: 5px 0 12px; }
   width: 100%;
   display: block;
   font-size: 26px;
-  padding: 16px;
+  padding: 15px;
   border-radius: 16px;
   border: 2px solid #ccc;
   background: white;
+}
+
+.pin-input {
+  width: 100%;
+  font-size: 34px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 2px solid #ccc;
+  text-align: center;
+  letter-spacing: 10px;
+  background: white;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.keypad button {
+  font-size: 28px;
+  font-weight: bold;
+  padding: 18px;
+  border: none;
+  border-radius: 16px;
+  background: #e9ecef;
+  cursor: pointer;
 }
 
 .btn {
   width: 100%;
   border: none;
   border-radius: 24px;
-  padding: 34px 20px;
-  margin: 18px 0;
-  font-size: 42px;
+  padding: 30px 20px;
+  margin: 16px 0;
+  font-size: 40px;
   font-weight: bold;
   color: white;
   cursor: pointer;
@@ -93,27 +112,21 @@ h1 { font-size: 48px; margin: 5px 0 12px; }
 }
 
 .message {
-  min-height: 40px;
-  margin-top: 20px;
-  font-size: 28px;
+  min-height: 38px;
+  margin-top: 18px;
+  font-size: 26px;
   font-weight: bold;
 }
 
 .last-card {
-  margin-top: 22px;
-  padding: 16px;
+  margin-top: 20px;
+  padding: 15px;
   border-radius: 18px;
   background: #f7f7f7;
 }
 
-.last-title { font-size: 21px; color: #555; margin-bottom: 8px; }
-
-.dernier {
-  font-size: 25px;
-  font-weight: bold;
-  color: #222;
-  white-space: pre-line;
-}
+.last-title { font-size: 20px; color: #555; margin-bottom: 8px; }
+.dernier { font-size: 24px; font-weight: bold; color: #222; white-space: pre-line; }
 
 .modal {
   position: fixed;
@@ -162,24 +175,9 @@ h1 { font-size: 48px; margin: 5px 0 12px; }
   cursor: pointer;
 }
 
-.checkline {
-  display: block;
-  text-align: left;
-  font-size: 22px;
-  margin: 18px 0;
-}
-
-.checkline input {
-  transform: scale(1.5);
-  margin-right: 12px;
-}
-
-.admin-message {
-  min-height: 28px;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 10px 0;
-}
+.checkline { display: block; text-align: left; font-size: 22px; margin: 18px 0; }
+.checkline input { transform: scale(1.5); margin-right: 12px; }
+.admin-message { min-height: 28px; font-size: 20px; font-weight: bold; margin: 10px 0; }
 
 .liste-employes {
   text-align: left;

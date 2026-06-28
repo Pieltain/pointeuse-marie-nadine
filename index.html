@@ -11,7 +11,7 @@
     <section class="card">
       <div class="topbar">
         <button class="admin-link" onclick="ouvrirAdmin()">⚙️ Admin</button>
-        <div class="version">v2.2</div>
+        <div class="version">v2.3</div>
       </div>
 
       <h1>POINTEUSE MC</h1>
@@ -19,9 +19,28 @@
 
       <div class="employee-box">
         <label for="employeSelect" class="label">Employé</label>
-        <select id="employeSelect" class="select" onchange="chargerEtat()">
+        <select id="employeSelect" class="select" onchange="changementEmploye()">
           <option>Chargement...</option>
         </select>
+      </div>
+
+      <div class="pin-box">
+        <label class="label">PIN</label>
+        <input id="pinInput" class="pin-input" type="password" inputmode="numeric" maxlength="6" readonly placeholder="••••">
+        <div class="keypad">
+          <button onclick="ajouterChiffre('1')">1</button>
+          <button onclick="ajouterChiffre('2')">2</button>
+          <button onclick="ajouterChiffre('3')">3</button>
+          <button onclick="ajouterChiffre('4')">4</button>
+          <button onclick="ajouterChiffre('5')">5</button>
+          <button onclick="ajouterChiffre('6')">6</button>
+          <button onclick="ajouterChiffre('7')">7</button>
+          <button onclick="ajouterChiffre('8')">8</button>
+          <button onclick="ajouterChiffre('9')">9</button>
+          <button onclick="effacerPin()">C</button>
+          <button onclick="ajouterChiffre('0')">0</button>
+          <button onclick="retourPin()">⌫</button>
+        </div>
       </div>
 
       <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
@@ -49,25 +68,15 @@
 
       <div id="adminPanel" class="hidden">
         <h3>Ajouter un employé</h3>
-
         <label class="label">Nom</label>
         <input id="newNom" class="input" type="text" placeholder="Nom de l'employé">
-
         <label class="label">PIN</label>
         <input id="newPin" class="input" type="text" inputmode="numeric" maxlength="6" placeholder="Ex : 1234">
 
-        <label class="checkline">
-          <input id="newActif" type="checkbox" checked>
-          Actif
-        </label>
-
-        <label class="checkline">
-          <input id="newAdmin" type="checkbox">
-          Administrateur
-        </label>
+        <label class="checkline"><input id="newActif" type="checkbox" checked> Actif</label>
+        <label class="checkline"><input id="newAdmin" type="checkbox"> Administrateur</label>
 
         <button class="btn-small" onclick="ajouterEmploye()">Ajouter l'employé</button>
-
         <div id="adminMessage" class="admin-message"></div>
 
         <h3>Employés actifs</h3>
