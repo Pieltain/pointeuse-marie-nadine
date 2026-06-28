@@ -1,56 +1,30 @@
-* { box-sizing: border-box; }
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pointeuse - Marie-Nadine Payet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="date" id="dateJour"></div>
+      <h1>POINTEUSE</h1>
+      <h2>Marie-Nadine Payet</h2>
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #eef2f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
+      <button id="btnDepart" class="btn depart" onclick="pointer('Départ')">DÉPART</button>
 
-.app { width: 100%; padding: 20px; }
+      <div id="message" class="message">Chargement...</div>
 
-.card {
-  max-width: 620px;
-  margin: auto;
-  background: white;
-  border-radius: 28px;
-  padding: 32px;
-  text-align: center;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.18);
-}
+      <div class="last-card">
+        <div class="last-title">Dernier pointage</div>
+        <div id="dernier" class="dernier">—</div>
+      </div>
+    </section>
+  </main>
 
-.date { font-size: 24px; margin-bottom: 15px; color: #555; }
-h1 { font-size: 52px; margin: 10px 0; }
-h2 { font-size: 32px; margin: 0 0 35px; color: #333; }
-
-.btn {
-  width: 100%;
-  border: none;
-  border-radius: 24px;
-  padding: 38px 20px;
-  margin: 22px 0;
-  font-size: 44px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-}
-
-.arrivee { background: #218838; }
-.depart { background: #c82333; }
-.btn:disabled { opacity: 0.5; }
-
-.message {
-  min-height: 42px;
-  margin-top: 24px;
-  font-size: 30px;
-  font-weight: bold;
-}
-
-.dernier {
-  margin-top: 12px;
-  font-size: 22px;
-  color: #555;
-}
+  <script src="script.js"></script>
+</body>
+</html>
