@@ -24,33 +24,12 @@ body {
 
 .topbar { display: flex; justify-content: space-between; align-items: center; }
 .version { font-size: 15px; color: #777; }
-
-.admin-link {
-  border: none;
-  background: #f0f0f0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 16px;
-  cursor: pointer;
-}
+.admin-link { border: none; background: #f0f0f0; padding: 10px 14px; border-radius: 12px; font-size: 16px; cursor: pointer; }
 
 h1 { font-size: 46px; margin: 5px 0 10px; }
+.clock { font-size: 38px; font-weight: bold; margin-bottom: 20px; color: #222; }
 
-.clock {
-  font-size: 38px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #222;
-}
-
-.label {
-  display: block;
-  text-align: left;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 10px 0 8px 4px;
-  color: #333;
-}
+.label { display: block; text-align: left; font-size: 20px; font-weight: bold; margin: 10px 0 8px 4px; color: #333; }
 
 .select, .input {
   width: 100%;
@@ -73,12 +52,7 @@ h1 { font-size: 46px; margin: 5px 0 10px; }
   background: white;
 }
 
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 12px;
-}
+.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
 
 .keypad button {
   font-size: 28px;
@@ -104,27 +78,10 @@ h1 { font-size: 46px; margin: 5px 0 10px; }
 
 .arrivee { background: #218838; }
 .depart { background: #c82333; }
+.btn:disabled { opacity: 0.28; cursor: not-allowed; filter: grayscale(80%); }
 
-.btn:disabled {
-  opacity: 0.28;
-  cursor: not-allowed;
-  filter: grayscale(80%);
-}
-
-.message {
-  min-height: 38px;
-  margin-top: 18px;
-  font-size: 26px;
-  font-weight: bold;
-}
-
-.last-card {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 18px;
-  background: #f7f7f7;
-}
-
+.message { min-height: 38px; margin-top: 18px; font-size: 26px; font-weight: bold; }
+.last-card { margin-top: 20px; padding: 15px; border-radius: 18px; background: #f7f7f7; }
 .last-title { font-size: 20px; color: #555; margin-bottom: 8px; }
 .dernier { font-size: 24px; font-weight: bold; color: #222; white-space: pre-line; }
 
@@ -151,39 +108,9 @@ h1 { font-size: 46px; margin: 5px 0 10px; }
   box-shadow: 0 10px 35px rgba(0,0,0,0.35);
 }
 
-.close {
-  float: right;
-  border: none;
-  background: #eee;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.btn-small {
-  width: 100%;
-  border: none;
-  border-radius: 18px;
-  padding: 18px;
-  margin: 18px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  background: #1f5fbf;
-  cursor: pointer;
-}
-
+.close { float: right; border: none; background: #eee; border-radius: 50%; width: 42px; height: 42px; font-size: 28px; cursor: pointer; }
+.btn-small { width: 100%; border: none; border-radius: 18px; padding: 18px; margin: 18px 0; font-size: 24px; font-weight: bold; color: white; background: #1f5fbf; cursor: pointer; }
 .checkline { display: block; text-align: left; font-size: 22px; margin: 18px 0; }
 .checkline input { transform: scale(1.5); margin-right: 12px; }
 .admin-message { min-height: 28px; font-size: 20px; font-weight: bold; margin: 10px 0; }
-
-.liste-employes {
-  text-align: left;
-  background: #f7f7f7;
-  border-radius: 14px;
-  padding: 14px;
-  font-size: 20px;
-  line-height: 1.6;
-}
+.liste-employes { text-align: left; background: #f7f7f7; border-radius: 14px; padding: 14px; font-size: 20px; line-height: 1.6; }

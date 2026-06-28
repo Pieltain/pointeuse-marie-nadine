@@ -1,9 +1,8 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxxYGK_Xx-jkMD2vZjtDAQ6itiMuUPQXyAOR8u5Csa0Y1oPrxC02EvIoSYRvjgw9aiCCA/exec";
 const ADMIN_PASSWORD = "6690";
 
-let employesCache = [];
 let etatDernierAction = "";
-let pinValide = false;
+let pinToken = "";
 
 function majHorloge() {
   const maintenant = new Date();
@@ -18,34 +17,29 @@ function majHorloge() {
 function jsonp(params) {
   return new Promise((resolve, reject) => {
     const callbackName = "jsonpCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
-    const script = document.createElement("script");
+    const balise = document.createElement("script");
     params.callback = callbackName;
     const query = new URLSearchParams(params).toString();
 
     window[callbackName] = function(data) {
       delete window[callbackName];
-      script.remove();
+      balise.remove();
       resolve(data);
     };
 
-    script.onerror = function() {
+    balise.onerror = function() {
       delete window[callbackName];
-      script.remove();
+      balise.remove();
       reject(new Error("Erreur JSONP"));
     };
 
-    script.src = API_URL + "?" + query;
-    document.body.appendChild(script);
+    balise.src = API_URL + "?" + query;
+    document.body.appendChild(balise);
   });
 }
 
 function employeSelectionne() {
   return document.getElementById("employeSelect").value;
-}
-
-function getEmployeCourant() {
-  const nom = employeSelectionne();
-  return employesCache.find(e => e.nom === nom);
 }
 
 function setMessage(texte) {
@@ -61,7 +55,7 @@ function appliquerEtatBoutons() {
   const arrivee = document.getElementById("btnArrivee");
   const depart = document.getElementById("btnDepart");
 
-  if (!pinValide) {
+  if (!pinToken) {
     arrivee.disabled = true;
     depart.disabled = true;
     return;
@@ -99,32 +93,26 @@ async function chargerEmployes() {
 
   try {
     const employes = await jsonp({ mode: "employes" });
-    employesCache = employes || [];
 
-    if (!employesCache.length) {
+    if (!employes || !employes.length) {
       select.innerHTML = '<option value="">Aucun employé actif</option>';
       setMessage("Aucun employé actif");
       return;
     }
 
-    employesCache.forEach(emp => {
+    employes.forEach(emp => {
       const option = document.createElement("option");
-      option.value = emp.nom;
+      option.value = emp.id;
       option.textContent = emp.nom;
       select.appendChild(option);
     });
 
-    afficherListeEmployes(employesCache);
+    afficherListeEmployes(employes);
     await chargerEtat();
   } catch (error) {
     select.innerHTML = '<option value="">Erreur de chargement</option>';
     setMessage("Erreur employés");
   }
-}
-
-function changementEmploye() {
-  effacerPin();
-  chargerEtat();
 }
 
 function afficherListeEmployes(employes) {
@@ -133,12 +121,17 @@ function afficherListeEmployes(employes) {
   zone.innerHTML = employes.map(e => `• ${e.nom}`).join("<br>");
 }
 
+function changementEmploye() {
+  effacerPin();
+  chargerEtat();
+}
+
 async function chargerEtat() {
-  const nom = employeSelectionne();
-  pinValide = false;
+  const employeId = employeSelectionne();
+  pinToken = "";
   boutonsInactifs();
 
-  if (!nom) {
+  if (!employeId) {
     setMessage("Aucun employé sélectionné");
     return;
   }
@@ -146,9 +139,8 @@ async function chargerEtat() {
   setMessage("Entrez le PIN");
 
   try {
-    const data = await jsonp({ nom: nom });
+    const data = await jsonp({ mode: "dernier", employeId: employeId });
     afficherDernier(data);
-    appliquerEtatBoutons();
   } catch (error) {
     document.getElementById("dernier").innerText = "Impossible de charger le dernier pointage";
     setMessage("Erreur de chargement");
@@ -170,42 +162,43 @@ function retourPin() {
 
 function effacerPin() {
   document.getElementById("pinInput").value = "";
-  pinValide = false;
+  pinToken = "";
   appliquerEtatBoutons();
   setMessage("Entrez le PIN");
 }
 
-function verifierPin() {
-  const emp = getEmployeCourant();
+async function verifierPin() {
+  const employeId = employeSelectionne();
   const pin = document.getElementById("pinInput").value;
 
-  if (!emp) {
-    pinValide = false;
-    appliquerEtatBoutons();
+  pinToken = "";
+  appliquerEtatBoutons();
+
+  if (!employeId || pin.length < 4) {
+    setMessage("Entrez le PIN");
     return;
   }
 
-  if (pin && String(emp.pin) === pin) {
-    pinValide = true;
-    setMessage("PIN correct");
-  } else {
-    pinValide = false;
-    if (pin.length >= 4) setMessage("PIN incorrect");
-    else setMessage("Entrez le PIN");
+  try {
+    const result = await jsonp({ mode: "verifierPin", employeId: employeId, pin: pin });
+    if (result && result.ok) {
+      pinToken = result.token;
+      setMessage("PIN correct");
+    } else {
+      setMessage("PIN incorrect");
+    }
+  } catch (error) {
+    setMessage("Erreur PIN");
   }
 
   appliquerEtatBoutons();
 }
 
 async function pointer(action) {
-  if (!pinValide) {
-    setMessage("PIN requis");
-    return;
-  }
+  const employeId = employeSelectionne();
 
-  const nom = employeSelectionne();
-  if (!nom) {
-    setMessage("Choisis un employé");
+  if (!pinToken) {
+    setMessage("PIN requis");
     return;
   }
 
@@ -217,7 +210,12 @@ async function pointer(action) {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ nom: nom, action: action })
+      body: JSON.stringify({
+        type: "pointage",
+        employeId: employeId,
+        token: pinToken,
+        action: action
+      })
     });
 
     const maintenant = new Date();
@@ -279,13 +277,7 @@ async function ajouterEmploye() {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        type: "ajouterEmploye",
-        nom: nom,
-        pin: pin,
-        actif: actif,
-        admin: admin
-      })
+      body: JSON.stringify({ type: "ajouterEmploye", nom, pin, actif, admin })
     });
 
     msg.innerText = "✔ Employé ajouté";

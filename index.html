@@ -11,7 +11,7 @@
     <section class="card">
       <div class="topbar">
         <button class="admin-link" onclick="ouvrirAdmin()">⚙️ Admin</button>
-        <div class="version">v2.3</div>
+        <div class="version">v2.3.1</div>
       </div>
 
       <h1>POINTEUSE MC</h1>
@@ -28,23 +28,23 @@
         <label class="label">PIN</label>
         <input id="pinInput" class="pin-input" type="password" inputmode="numeric" maxlength="6" readonly placeholder="••••">
         <div class="keypad">
-          <button onclick="ajouterChiffre('1')">1</button>
-          <button onclick="ajouterChiffre('2')">2</button>
-          <button onclick="ajouterChiffre('3')">3</button>
-          <button onclick="ajouterChiffre('4')">4</button>
-          <button onclick="ajouterChiffre('5')">5</button>
-          <button onclick="ajouterChiffre('6')">6</button>
-          <button onclick="ajouterChiffre('7')">7</button>
-          <button onclick="ajouterChiffre('8')">8</button>
-          <button onclick="ajouterChiffre('9')">9</button>
-          <button onclick="effacerPin()">C</button>
-          <button onclick="ajouterChiffre('0')">0</button>
-          <button onclick="retourPin()">⌫</button>
+          <button type="button" onclick="ajouterChiffre('1')">1</button>
+          <button type="button" onclick="ajouterChiffre('2')">2</button>
+          <button type="button" onclick="ajouterChiffre('3')">3</button>
+          <button type="button" onclick="ajouterChiffre('4')">4</button>
+          <button type="button" onclick="ajouterChiffre('5')">5</button>
+          <button type="button" onclick="ajouterChiffre('6')">6</button>
+          <button type="button" onclick="ajouterChiffre('7')">7</button>
+          <button type="button" onclick="ajouterChiffre('8')">8</button>
+          <button type="button" onclick="ajouterChiffre('9')">9</button>
+          <button type="button" onclick="effacerPin()">C</button>
+          <button type="button" onclick="ajouterChiffre('0')">0</button>
+          <button type="button" onclick="retourPin()">⌫</button>
         </div>
       </div>
 
-      <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
-      <button id="btnDepart" class="btn depart" onclick="pointer('Départ')">DÉPART</button>
+      <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')" disabled>ARRIVÉE</button>
+      <button id="btnDepart" class="btn depart" onclick="pointer('Départ')" disabled>DÉPART</button>
 
       <div id="message" class="message">Chargement...</div>
 
