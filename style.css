@@ -10,9 +10,15 @@ body {
   justify-content: center;
 }
 
-.app { width: 100%; padding: 16px; }
+.app {
+  width: 100%;
+  padding: 16px;
+}
 
-.terminal {
+/* Compatible avec l'ancien nom .card et le nouveau nom .terminal */
+.terminal,
+.card {
+  width: 100%;
   max-width: 620px;
   margin: auto;
   background: #ffffff;
@@ -22,21 +28,27 @@ body {
   box-shadow: 0 12px 35px rgba(0,0,0,.20);
 }
 
-.top {
+.top,
+.topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.admin-open {
+.admin-open,
+.admin-link {
   border: 0;
   background: #edf1f5;
   border-radius: 14px;
   padding: 10px 14px;
   font-size: 16px;
+  cursor: pointer;
 }
 
-.version { color: #777; font-size: 14px; }
+.version {
+  color: #777;
+  font-size: 14px;
+}
 
 h1 {
   margin: 8px 0 4px;
@@ -58,7 +70,8 @@ h1 {
   margin: 12px 0 6px;
 }
 
-.select, .input {
+.select,
+.input {
   width: 100%;
   font-size: 25px;
   padding: 15px;
@@ -67,15 +80,18 @@ h1 {
   background: white;
 }
 
-.pin-display {
+.pin-display,
+.pin-input {
   margin: 18px auto 12px;
   width: 190px;
   padding: 14px;
   border-radius: 18px;
+  border: 0;
   background: #f4f6f8;
   font-size: 34px;
   font-weight: 800;
   letter-spacing: 8px;
+  text-align: center;
 }
 
 .keypad {
@@ -92,9 +108,11 @@ h1 {
   font-size: 28px;
   font-weight: 800;
   background: #edf1f5;
+  cursor: pointer;
 }
 
-.big {
+.big,
+.btn {
   width: 100%;
   border: 0;
   border-radius: 24px;
@@ -105,10 +123,18 @@ h1 {
   color: white;
 }
 
-.arrival { background: #238636; }
-.departure { background: #d1242f; }
+.arrival,
+.arrivee {
+  background: #238636;
+}
 
-.big:disabled {
+.departure,
+.depart {
+  background: #d1242f;
+}
+
+.big:disabled,
+.btn:disabled {
   opacity: .25;
   filter: grayscale(90%);
 }
@@ -120,15 +146,26 @@ h1 {
   margin-top: 15px;
 }
 
-.last {
+.last,
+.last-card {
   margin-top: 18px;
   border-radius: 18px;
   background: #f6f7f8;
   padding: 14px;
 }
 
-.last-title { color: #666; font-size: 18px; margin-bottom: 6px; }
-#lastClocking { font-size: 23px; font-weight: 800; white-space: pre-line; }
+.last-title {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+#lastClocking,
+.dernier {
+  font-size: 23px;
+  font-weight: 800;
+  white-space: pre-line;
+}
 
 .modal {
   position: fixed;
@@ -140,9 +177,12 @@ h1 {
   justify-content: center;
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
-.panel {
+.panel,
+.modal-content {
   width: 100%;
   max-width: 640px;
   max-height: 92vh;
@@ -162,7 +202,8 @@ h1 {
   background: #eee;
 }
 
-.admin-button {
+.admin-button,
+.btn-small {
   width: 100%;
   border: 0;
   border-radius: 18px;
@@ -174,7 +215,8 @@ h1 {
   font-weight: 800;
 }
 
-.check {
+.check,
+.checkline {
   display: block;
   text-align: left;
   font-size: 21px;
@@ -188,7 +230,8 @@ h1 {
   font-size: 20px;
 }
 
-.employee-list {
+.employee-list,
+.liste-employes {
   text-align: left;
   background: #f6f7f8;
   border-radius: 14px;
