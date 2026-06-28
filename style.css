@@ -13,25 +13,44 @@ body {
 .app { width: 100%; padding: 20px; }
 
 .card {
-  max-width: 620px;
+  max-width: 640px;
   margin: auto;
   background: white;
-  border-radius: 28px;
-  padding: 32px;
+  border-radius: 30px;
+  padding: 34px;
   text-align: center;
   box-shadow: 0 10px 35px rgba(0,0,0,0.18);
 }
 
-.date { font-size: 24px; margin-bottom: 15px; color: #555; }
-h1 { font-size: 52px; margin: 10px 0; }
-h2 { font-size: 32px; margin: 0 0 35px; color: #333; }
+.version { text-align: right; font-size: 16px; color: #777; }
+h1 { font-size: 52px; margin: 5px 0 10px; }
+.clock { font-size: 46px; font-weight: bold; margin-bottom: 28px; color: #222; }
+
+.label {
+  display: block;
+  text-align: left;
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0 0 8px 4px;
+  color: #333;
+}
+
+.select {
+  width: 100%;
+  font-size: 30px;
+  padding: 20px;
+  border-radius: 18px;
+  border: 2px solid #ccc;
+  margin-bottom: 20px;
+  background: white;
+}
 
 .btn {
   width: 100%;
   border: none;
   border-radius: 24px;
   padding: 38px 20px;
-  margin: 22px 0;
+  margin: 20px 0;
   font-size: 44px;
   font-weight: bold;
   color: white;
@@ -49,7 +68,7 @@ h2 { font-size: 32px; margin: 0 0 35px; color: #333; }
 
 .message {
   min-height: 42px;
-  margin-top: 24px;
+  margin-top: 22px;
   font-size: 30px;
   font-weight: bold;
 }
@@ -61,11 +80,7 @@ h2 { font-size: 32px; margin: 0 0 35px; color: #333; }
   background: #f7f7f7;
 }
 
-.last-title {
-  font-size: 22px;
-  color: #555;
-  margin-bottom: 8px;
-}
+.last-title { font-size: 22px; color: #555; margin-bottom: 8px; }
 
 .dernier {
   font-size: 26px;

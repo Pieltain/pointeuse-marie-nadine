@@ -3,15 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pointeuse - Marie-Nadine Payet</title>
+  <title>Pointeuse MC</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
     <section class="card">
-      <div class="date" id="dateJour"></div>
-      <h1>POINTEUSE</h1>
-      <h2>Marie-Nadine Payet</h2>
+      <div class="version">v2.0</div>
+      <h1>POINTEUSE MC</h1>
+      <div class="clock" id="horloge">--:--:--</div>
+
+      <label for="employeSelect" class="label">Employé</label>
+      <select id="employeSelect" class="select" onchange="chargerEtat()">
+        <option>Chargement...</option>
+      </select>
 
       <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')">ARRIVÉE</button>
       <button id="btnDepart" class="btn depart" onclick="pointer('Départ')">DÉPART</button>
@@ -24,7 +29,6 @@
       </div>
     </section>
   </main>
-
   <script src="script.js"></script>
 </body>
 </html>
