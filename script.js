@@ -186,14 +186,35 @@ async function updateEmployee() {
   const color = $("editColor").value;
   const active = $("editActive").checked;
   const admin = $("editAdmin").checked;
+
   if (!adminPassword) { $("adminMessage").innerText = "Mot de passe admin requis"; return; }
   if (!name) { $("adminMessage").innerText = "Nom obligatoire"; return; }
   if (pin && !/^\d{4,6}$/.test(pin)) { $("adminMessage").innerText = "PIN : 4 à 6 chiffres"; return; }
+
   $("adminMessage").innerText = "Modification...";
-  await fetch(API_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({action:"updateEmployee", adminPassword, employeeId, name, pin, color, active, admin})});
-  $("adminMessage").innerText = "✔ Employé modifié";
-  $("editPin").value = "";
-  setTimeout(loadEmployees, 1200);
+
+  try {
+    const result = await jsonp({
+      action: "updateEmployee",
+      adminPassword,
+      employeeId,
+      name,
+      pin,
+      color,
+      active: active ? "true" : "false",
+      admin: admin ? "true" : "false"
+    });
+
+    if (result && result.ok) {
+      $("adminMessage").innerText = "✔ Employé modifié";
+      $("editPin").value = "";
+      setTimeout(loadEmployees, 500);
+    } else {
+      $("adminMessage").innerText = "Erreur modification";
+    }
+  } catch(e) {
+    $("adminMessage").innerText = "Erreur modification";
+  }
 }
 
 setInterval(updateClock, 1000);
