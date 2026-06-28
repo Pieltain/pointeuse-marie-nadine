@@ -277,11 +277,10 @@ async function exportCsv() {
       return;
     }
 
-    const blob = new Blob([result.csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
+    const url = "data:text/csv;charset=utf-8," + encodeURIComponent(result.csv);
 
     resultZone.innerHTML =
-      `<a download="${result.filename}" href="${url}">Télécharger ${result.filename}</a><br>` +
+      `<a download="${result.filename}" href="${url}">📥 Télécharger ${result.filename}</a><br>` +
       `${result.rows} ligne(s) exportée(s).`;
   } catch (e) {
     resultZone.innerText = "Erreur export.";
