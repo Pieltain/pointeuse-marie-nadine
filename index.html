@@ -7,84 +7,76 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <section class="card">
-      <div class="topbar">
-        <button class="admin-link" onclick="ouvrirAdmin()">⚙️ Admin</button>
-        <div class="version">v2.3.1</div>
-      </div>
-
-      <h1>POINTEUSE MC</h1>
-      <div class="clock" id="horloge">--:--:--</div>
-
-      <div class="employee-box">
-        <label for="employeSelect" class="label">Employé</label>
-        <select id="employeSelect" class="select" onchange="changementEmploye()">
-          <option>Chargement...</option>
-        </select>
-      </div>
-
-      <div class="pin-box">
-        <label class="label">PIN</label>
-        <input id="pinInput" class="pin-input" type="password" inputmode="numeric" maxlength="6" readonly placeholder="••••">
-        <div class="keypad">
-          <button type="button" onclick="ajouterChiffre('1')">1</button>
-          <button type="button" onclick="ajouterChiffre('2')">2</button>
-          <button type="button" onclick="ajouterChiffre('3')">3</button>
-          <button type="button" onclick="ajouterChiffre('4')">4</button>
-          <button type="button" onclick="ajouterChiffre('5')">5</button>
-          <button type="button" onclick="ajouterChiffre('6')">6</button>
-          <button type="button" onclick="ajouterChiffre('7')">7</button>
-          <button type="button" onclick="ajouterChiffre('8')">8</button>
-          <button type="button" onclick="ajouterChiffre('9')">9</button>
-          <button type="button" onclick="effacerPin()">C</button>
-          <button type="button" onclick="ajouterChiffre('0')">0</button>
-          <button type="button" onclick="retourPin()">⌫</button>
-        </div>
-      </div>
-
-      <button id="btnArrivee" class="btn arrivee" onclick="pointer('Arrivée')" disabled>ARRIVÉE</button>
-      <button id="btnDepart" class="btn depart" onclick="pointer('Départ')" disabled>DÉPART</button>
-
-      <div id="message" class="message">Chargement...</div>
-
-      <div class="last-card">
-        <div class="last-title">Dernier pointage</div>
-        <div id="dernier" class="dernier">—</div>
-      </div>
-    </section>
-  </main>
-
-  <div id="adminModal" class="modal hidden">
-    <div class="modal-content">
-      <button class="close" onclick="fermerAdmin()">×</button>
-      <h2>Administration</h2>
-
-      <div id="adminLogin">
-        <label class="label">Mot de passe admin</label>
-        <input id="adminPassword" class="input" type="password" inputmode="numeric" placeholder="Mot de passe">
-        <button class="btn-small" onclick="connexionAdmin()">Se connecter</button>
-      </div>
-
-      <div id="adminPanel" class="hidden">
-        <h3>Ajouter un employé</h3>
-        <label class="label">Nom</label>
-        <input id="newNom" class="input" type="text" placeholder="Nom de l'employé">
-        <label class="label">PIN</label>
-        <input id="newPin" class="input" type="text" inputmode="numeric" maxlength="6" placeholder="Ex : 1234">
-
-        <label class="checkline"><input id="newActif" type="checkbox" checked> Actif</label>
-        <label class="checkline"><input id="newAdmin" type="checkbox"> Administrateur</label>
-
-        <button class="btn-small" onclick="ajouterEmploye()">Ajouter l'employé</button>
-        <div id="adminMessage" class="admin-message"></div>
-
-        <h3>Employés actifs</h3>
-        <div id="listeEmployes" class="liste-employes">Chargement...</div>
-      </div>
+<main class="app">
+  <section class="terminal">
+    <div class="top">
+      <button class="admin-open" onclick="openAdmin()">⚙ Admin</button>
+      <div class="version">v3.0.0</div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <h1 id="appTitle">Pointeuse MC</h1>
+    <div id="clock" class="clock">--:--:--</div>
+
+    <label class="label" for="employeeSelect">Employé</label>
+    <select id="employeeSelect" class="select" onchange="onEmployeeChange()">
+      <option>Chargement...</option>
+    </select>
+
+    <div class="pin-display" id="pinDisplay">----</div>
+
+    <div class="keypad">
+      <button onclick="pressKey('1')">1</button>
+      <button onclick="pressKey('2')">2</button>
+      <button onclick="pressKey('3')">3</button>
+      <button onclick="pressKey('4')">4</button>
+      <button onclick="pressKey('5')">5</button>
+      <button onclick="pressKey('6')">6</button>
+      <button onclick="pressKey('7')">7</button>
+      <button onclick="pressKey('8')">8</button>
+      <button onclick="pressKey('9')">9</button>
+      <button onclick="clearPin()">C</button>
+      <button onclick="pressKey('0')">0</button>
+      <button onclick="backspacePin()">⌫</button>
+    </div>
+
+    <button id="arrivalBtn" class="big arrival" onclick="clockAction('Arrivée')" disabled>ARRIVÉE</button>
+    <button id="departureBtn" class="big departure" onclick="clockAction('Départ')" disabled>DÉPART</button>
+
+    <div id="message" class="message">Chargement...</div>
+
+    <div class="last">
+      <div class="last-title">Dernier pointage</div>
+      <div id="lastClocking">—</div>
+    </div>
+  </section>
+</main>
+
+<div id="adminModal" class="modal hidden">
+  <section class="panel">
+    <button class="close" onclick="closeAdmin()">×</button>
+    <h2>Administration</h2>
+
+    <label class="label">Mot de passe admin</label>
+    <input id="adminPassword" class="input" type="password" inputmode="numeric">
+
+    <h3>Ajouter un employé</h3>
+    <label class="label">Nom</label>
+    <input id="newName" class="input" type="text">
+
+    <label class="label">PIN</label>
+    <input id="newPin" class="input" type="text" inputmode="numeric" maxlength="6">
+
+    <label class="check"><input id="newActive" type="checkbox" checked> Actif</label>
+    <label class="check"><input id="newAdmin" type="checkbox"> Administrateur</label>
+
+    <button class="admin-button" onclick="addEmployee()">Ajouter</button>
+    <div id="adminMessage" class="admin-message"></div>
+
+    <h3>Employés actifs</h3>
+    <div id="employeeList" class="employee-list">—</div>
+  </section>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

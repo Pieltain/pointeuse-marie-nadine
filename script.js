@@ -1,208 +1,181 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbxxYGK_Xx-jkMD2vZjtDAQ6itiMuUPQXyAOR8u5Csa0Y1oPrxC02EvIoSYRvjgw9aiCCA/exec";
-const ADMIN_PASSWORD = "6690";
 
-let etatDernierAction = "";
-let pinToken = "";
+let employees = [];
+let authToken = "";
+let currentPin = "";
+let lastAction = "";
 
-function majHorloge() {
-  const maintenant = new Date();
-  document.getElementById("horloge").innerText =
-    maintenant.toLocaleTimeString("fr-BE", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-}
+function $(id) { return document.getElementById(id); }
 
-function jsonp(params) {
-  return new Promise((resolve, reject) => {
-    const callbackName = "jsonpCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
-    const balise = document.createElement("script");
-    params.callback = callbackName;
-    const query = new URLSearchParams(params).toString();
-
-    window[callbackName] = function(data) {
-      delete window[callbackName];
-      balise.remove();
-      resolve(data);
-    };
-
-    balise.onerror = function() {
-      delete window[callbackName];
-      balise.remove();
-      reject(new Error("Erreur JSONP"));
-    };
-
-    balise.src = API_URL + "?" + query;
-    document.body.appendChild(balise);
+function updateClock() {
+  $("clock").innerText = new Date().toLocaleTimeString("fr-BE", {
+    hour: "2-digit", minute: "2-digit", second: "2-digit"
   });
 }
 
-function employeSelectionne() {
-  return document.getElementById("employeSelect").value;
+function setMessage(text) { $("message").innerText = text; }
+
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cb = "cb_" + Date.now() + "_" + Math.floor(Math.random() * 999999);
+    params.callback = cb;
+    const s = document.createElement("script");
+
+    window[cb] = data => {
+      delete window[cb];
+      s.remove();
+      resolve(data);
+    };
+
+    s.onerror = () => {
+      delete window[cb];
+      s.remove();
+      reject(new Error("JSONP failed"));
+    };
+
+    s.src = API_URL + "?" + new URLSearchParams(params).toString();
+    document.body.appendChild(s);
+  });
 }
 
-function setMessage(texte) {
-  document.getElementById("message").innerText = texte;
+function selectedEmployeeId() { return $("employeeSelect").value; }
+
+function selectedEmployeeName() {
+  const option = $("employeeSelect").selectedOptions[0];
+  return option ? option.textContent : "";
 }
 
-function boutonsInactifs() {
-  document.getElementById("btnArrivee").disabled = true;
-  document.getElementById("btnDepart").disabled = true;
+function disableClockButtons() {
+  $("arrivalBtn").disabled = true;
+  $("departureBtn").disabled = true;
 }
 
-function appliquerEtatBoutons() {
-  const arrivee = document.getElementById("btnArrivee");
-  const depart = document.getElementById("btnDepart");
-
-  if (!pinToken) {
-    arrivee.disabled = true;
-    depart.disabled = true;
+function updateClockButtons() {
+  if (!authToken) {
+    disableClockButtons();
     return;
   }
 
-  if (etatDernierAction === "Arrivée") {
-    arrivee.disabled = true;
-    depart.disabled = false;
+  if (lastAction === "Arrivée") {
+    $("arrivalBtn").disabled = true;
+    $("departureBtn").disabled = false;
   } else {
-    arrivee.disabled = false;
-    depart.disabled = true;
+    $("arrivalBtn").disabled = false;
+    $("departureBtn").disabled = true;
   }
 }
 
-function afficherDernier(data) {
-  const dernier = document.getElementById("dernier");
-
-  if (!data || !data.action) {
-    dernier.innerText = "Aucun pointage";
-    etatDernierAction = "Départ";
-    appliquerEtatBoutons();
-    return;
-  }
-
-  dernier.innerText = `${data.date || ""}\n${data.heure || ""} - ${data.action}`;
-  etatDernierAction = data.action;
-  appliquerEtatBoutons();
+function renderPin() {
+  $("pinDisplay").innerText = currentPin ? "•".repeat(currentPin.length) : "----";
 }
 
-async function chargerEmployes() {
-  setMessage("Chargement des employés...");
-  boutonsInactifs();
-  const select = document.getElementById("employeSelect");
-  select.innerHTML = "";
-
-  try {
-    const employes = await jsonp({ mode: "employes" });
-
-    if (!employes || !employes.length) {
-      select.innerHTML = '<option value="">Aucun employé actif</option>';
-      setMessage("Aucun employé actif");
-      return;
-    }
-
-    employes.forEach(emp => {
-      const option = document.createElement("option");
-      option.value = emp.id;
-      option.textContent = emp.nom;
-      select.appendChild(option);
-    });
-
-    afficherListeEmployes(employes);
-    await chargerEtat();
-  } catch (error) {
-    select.innerHTML = '<option value="">Erreur de chargement</option>';
-    setMessage("Erreur employés");
-  }
-}
-
-function afficherListeEmployes(employes) {
-  const zone = document.getElementById("listeEmployes");
-  if (!zone) return;
-  zone.innerHTML = employes.map(e => `• ${e.nom}`).join("<br>");
-}
-
-function changementEmploye() {
-  effacerPin();
-  chargerEtat();
-}
-
-async function chargerEtat() {
-  const employeId = employeSelectionne();
-  pinToken = "";
-  boutonsInactifs();
-
-  if (!employeId) {
-    setMessage("Aucun employé sélectionné");
-    return;
-  }
-
-  setMessage("Entrez le PIN");
-
-  try {
-    const data = await jsonp({ mode: "dernier", employeId: employeId });
-    afficherDernier(data);
-  } catch (error) {
-    document.getElementById("dernier").innerText = "Impossible de charger le dernier pointage";
-    setMessage("Erreur de chargement");
-  }
-}
-
-function ajouterChiffre(chiffre) {
-  const input = document.getElementById("pinInput");
-  if (input.value.length >= 6) return;
-  input.value += chiffre;
-  verifierPin();
-}
-
-function retourPin() {
-  const input = document.getElementById("pinInput");
-  input.value = input.value.slice(0, -1);
-  verifierPin();
-}
-
-function effacerPin() {
-  document.getElementById("pinInput").value = "";
-  pinToken = "";
-  appliquerEtatBoutons();
+function clearPin() {
+  currentPin = "";
+  authToken = "";
+  renderPin();
+  updateClockButtons();
   setMessage("Entrez le PIN");
 }
 
-async function verifierPin() {
-  const employeId = employeSelectionne();
-  const pin = document.getElementById("pinInput").value;
+function backspacePin() {
+  currentPin = currentPin.slice(0, -1);
+  renderPin();
+  verifyPinIfReady();
+}
 
-  pinToken = "";
-  appliquerEtatBoutons();
+function pressKey(key) {
+  if (currentPin.length >= 6) return;
+  currentPin += key;
+  renderPin();
+  verifyPinIfReady();
+}
 
-  if (!employeId || pin.length < 4) {
+async function verifyPinIfReady() {
+  authToken = "";
+  updateClockButtons();
+
+  if (currentPin.length < 4) {
     setMessage("Entrez le PIN");
     return;
   }
 
   try {
-    const result = await jsonp({ mode: "verifierPin", employeId: employeId, pin: pin });
-    if (result && result.ok) {
-      pinToken = result.token;
+    const result = await jsonp({
+      action: "verifyPin",
+      employeeId: selectedEmployeeId(),
+      pin: currentPin
+    });
+
+    if (result.ok) {
+      authToken = result.token;
       setMessage("PIN correct");
     } else {
       setMessage("PIN incorrect");
     }
-  } catch (error) {
+  } catch (e) {
     setMessage("Erreur PIN");
   }
 
-  appliquerEtatBoutons();
+  updateClockButtons();
 }
 
-async function pointer(action) {
-  const employeId = employeSelectionne();
+async function loadEmployees() {
+  setMessage("Chargement...");
+  disableClockButtons();
 
-  if (!pinToken) {
+  try {
+    const data = await jsonp({ action: "employees" });
+    employees = data.employees || [];
+
+    const select = $("employeeSelect");
+    select.innerHTML = "";
+
+    employees.forEach(emp => {
+      const option = document.createElement("option");
+      option.value = emp.id;
+      option.textContent = emp.name;
+      select.appendChild(option);
+    });
+
+    $("employeeList").innerHTML = employees.map(e => "• " + e.name).join("<br>");
+    await loadLastClocking();
+  } catch(e) {
+    setMessage("Erreur employés");
+  }
+}
+
+async function loadLastClocking() {
+  clearPin();
+  const employeeId = selectedEmployeeId();
+  if (!employeeId) return;
+
+  try {
+    const result = await jsonp({ action: "lastClocking", employeeId });
+    if (result.action) {
+      lastAction = result.action;
+      $("lastClocking").innerText = `${result.date}\n${result.time} - ${result.action}`;
+    } else {
+      lastAction = "Départ";
+      $("lastClocking").innerText = "Aucun pointage";
+    }
+  } catch(e) {
+    $("lastClocking").innerText = "Erreur de chargement";
+  }
+
+  updateClockButtons();
+}
+
+function onEmployeeChange() {
+  loadLastClocking();
+}
+
+async function clockAction(action) {
+  if (!authToken) {
     setMessage("PIN requis");
     return;
   }
 
-  document.querySelectorAll("button").forEach(b => b.disabled = true);
+  disableClockButtons();
   setMessage("Enregistrement...");
 
   try {
@@ -211,86 +184,63 @@ async function pointer(action) {
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
-        type: "pointage",
-        employeId: employeId,
-        token: pinToken,
-        action: action
+        action: "clock",
+        employeeId: selectedEmployeeId(),
+        token: authToken,
+        clockAction: action
       })
     });
 
-    const maintenant = new Date();
-    const heure = maintenant.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
-    const date = maintenant.toLocaleDateString("fr-BE");
+    const now = new Date();
+    lastAction = action;
+    $("lastClocking").innerText =
+      now.toLocaleDateString("fr-BE") + "\n" +
+      now.toLocaleTimeString("fr-BE", {hour:"2-digit", minute:"2-digit"}) +
+      " - " + action;
 
-    afficherDernier({ action, heure, date });
     setMessage("✔ Pointage envoyé");
-    effacerPin();
-
-  } catch (error) {
+    clearPin();
+  } catch(e) {
     setMessage("Erreur d'envoi");
-    await chargerEtat();
   }
 }
 
-function ouvrirAdmin() {
-  document.getElementById("adminModal").classList.remove("hidden");
-  document.getElementById("adminPassword").focus();
-}
+function openAdmin() { $("adminModal").classList.remove("hidden"); }
+function closeAdmin() { $("adminModal").classList.add("hidden"); }
 
-function fermerAdmin() {
-  document.getElementById("adminModal").classList.add("hidden");
-}
+async function addEmployee() {
+  const adminPassword = $("adminPassword").value;
+  const name = $("newName").value.trim();
+  const pin = $("newPin").value.trim();
+  const active = $("newActive").checked;
+  const admin = $("newAdmin").checked;
 
-function connexionAdmin() {
-  const pwd = document.getElementById("adminPassword").value;
-  if (pwd !== ADMIN_PASSWORD) {
-    document.getElementById("adminMessage").innerText = "Mot de passe incorrect";
-    return;
-  }
+  if (!adminPassword) { $("adminMessage").innerText = "Mot de passe admin requis"; return; }
+  if (!name) { $("adminMessage").innerText = "Nom obligatoire"; return; }
+  if (!/^\d{4,6}$/.test(pin)) { $("adminMessage").innerText = "PIN : 4 à 6 chiffres"; return; }
 
-  document.getElementById("adminLogin").classList.add("hidden");
-  document.getElementById("adminPanel").classList.remove("hidden");
-  document.getElementById("adminMessage").innerText = "";
-}
-
-async function ajouterEmploye() {
-  const nom = document.getElementById("newNom").value.trim();
-  const pin = document.getElementById("newPin").value.trim();
-  const actif = document.getElementById("newActif").checked;
-  const admin = document.getElementById("newAdmin").checked;
-  const msg = document.getElementById("adminMessage");
-
-  if (!nom) {
-    msg.innerText = "Nom obligatoire";
-    return;
-  }
-
-  if (!/^\d{4,6}$/.test(pin)) {
-    msg.innerText = "PIN obligatoire : 4 à 6 chiffres";
-    return;
-  }
-
-  msg.innerText = "Ajout en cours...";
+  $("adminMessage").innerText = "Ajout...";
 
   try {
     await fetch(API_URL, {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ type: "ajouterEmploye", nom, pin, actif, admin })
+      body: JSON.stringify({
+        action: "addEmployee",
+        adminPassword, name, pin, active, admin
+      })
     });
 
-    msg.innerText = "✔ Employé ajouté";
-    document.getElementById("newNom").value = "";
-    document.getElementById("newPin").value = "";
-    document.getElementById("newActif").checked = true;
-    document.getElementById("newAdmin").checked = false;
-    setTimeout(chargerEmployes, 1200);
-  } catch (error) {
-    msg.innerText = "Erreur lors de l'ajout";
+    $("adminMessage").innerText = "✔ Employé ajouté";
+    $("newName").value = "";
+    $("newPin").value = "";
+    setTimeout(loadEmployees, 1200);
+  } catch(e) {
+    $("adminMessage").innerText = "Erreur ajout";
   }
 }
 
-setInterval(majHorloge, 1000);
-majHorloge();
-chargerEmployes();
+setInterval(updateClock, 1000);
+updateClock();
+loadEmployees();
