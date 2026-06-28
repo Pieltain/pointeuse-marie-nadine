@@ -1,6 +1,4 @@
-const FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfcZ_t28SEDbHu2_Rm-pj0hdZ1GDYWpbs2jhf1Itijtqs8prw/formResponse";
-const FIELD_NOM = "entry.891225690";
-const FIELD_ACTION = "entry.189412361";
+const API_URL = "https://script.google.com/macros/s/AKfycbxxYGK_Xx-jkMD2vZjtDAQ6itiMuUPQXyAOR8u5Csa0Y1oPrxC02EvIoSYRvjgw9aiCCA/exec";
 const NOM_EMPLOYEE = "Marie-Nadine Payet";
 
 function afficherDate() {
@@ -14,7 +12,7 @@ function afficherDate() {
     });
 }
 
-function pointer(action) {
+async function pointer(action) {
   const boutons = document.querySelectorAll("button");
   const message = document.getElementById("message");
   const dernier = document.getElementById("dernier");
@@ -22,35 +20,30 @@ function pointer(action) {
   boutons.forEach(b => b.disabled = true);
   message.innerText = "Enregistrement...";
 
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = FORM_ACTION_URL;
-  form.target = "hiddenFrame";
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        nom: NOM_EMPLOYEE,
+        action: action
+      })
+    });
 
-  const champNom = document.createElement("input");
-  champNom.type = "hidden";
-  champNom.name = FIELD_NOM;
-  champNom.value = NOM_EMPLOYEE;
+    const heure = new Date().toLocaleTimeString("fr-BE", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
 
-  const champAction = document.createElement("input");
-  champAction.type = "hidden";
-  champAction.name = FIELD_ACTION;
-  champAction.value = action;
+    message.innerText = "✔ Pointage envoyé";
+    dernier.innerText = `${heure} - ${action}`;
 
-  form.appendChild(champNom);
-  form.appendChild(champAction);
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
-  const heure = new Date().toLocaleTimeString("fr-BE", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-
-  message.innerText = "✔ Pointage enregistré";
-  dernier.innerText = `${heure} - ${action}`;
+  } catch (error) {
+    message.innerText = "Erreur d'envoi";
+  }
 
   setTimeout(() => {
     boutons.forEach(b => b.disabled = false);
