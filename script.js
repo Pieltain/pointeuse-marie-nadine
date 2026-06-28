@@ -12,13 +12,56 @@ function afficherDate() {
     });
 }
 
-async function pointer(action) {
-  const boutons = document.querySelectorAll("button");
-  const message = document.getElementById("message");
+function setMessage(texte) {
+  document.getElementById("message").innerText = texte;
+}
+
+function reglerBoutons(dernierAction) {
+  const arrivee = document.getElementById("btnArrivee");
+  const depart = document.getElementById("btnDepart");
+
+  if (dernierAction === "Arrivée") {
+    arrivee.disabled = true;
+    depart.disabled = false;
+  } else {
+    arrivee.disabled = false;
+    depart.disabled = true;
+  }
+}
+
+function afficherDernier(data) {
   const dernier = document.getElementById("dernier");
 
+  if (!data || !data.action) {
+    dernier.innerText = "Aucun pointage";
+    reglerBoutons("Départ");
+    return;
+  }
+
+  dernier.innerText = `${data.date || ""}\n${data.heure || ""} - ${data.action}`;
+  reglerBoutons(data.action);
+}
+
+async function chargerEtat() {
+  setMessage("Chargement...");
+
+  try {
+    const response = await fetch(`${API_URL}?nom=${encodeURIComponent(NOM_EMPLOYEE)}`);
+    const data = await response.json();
+    afficherDernier(data);
+    setMessage("Prêt");
+  } catch (error) {
+    document.getElementById("dernier").innerText = "Impossible de charger le dernier pointage";
+    document.getElementById("btnArrivee").disabled = false;
+    document.getElementById("btnDepart").disabled = false;
+    setMessage("Mode secours");
+  }
+}
+
+async function pointer(action) {
+  const boutons = document.querySelectorAll("button");
   boutons.forEach(b => b.disabled = true);
-  message.innerText = "Enregistrement...";
+  setMessage("Enregistrement...");
 
   try {
     await fetch(API_URL, {
@@ -33,22 +76,20 @@ async function pointer(action) {
       })
     });
 
-    const heure = new Date().toLocaleTimeString("fr-BE", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+    const maintenant = new Date();
+    const heure = maintenant.toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+    const date = maintenant.toLocaleDateString("fr-BE");
 
-    message.innerText = "✔ Pointage envoyé";
-    dernier.innerText = `${heure} - ${action}`;
+    afficherDernier({ action, heure, date });
+    setMessage("✔ Pointage envoyé");
+
+    setTimeout(() => setMessage("Prêt"), 3000);
 
   } catch (error) {
-    message.innerText = "Erreur d'envoi";
+    setMessage("Erreur d'envoi");
+    await chargerEtat();
   }
-
-  setTimeout(() => {
-    boutons.forEach(b => b.disabled = false);
-    message.innerText = "Prêt";
-  }, 4000);
 }
 
 afficherDate();
+chargerEtat();
