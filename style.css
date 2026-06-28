@@ -1,275 +1,42 @@
 * { box-sizing: border-box; }
-
-:root {
-  --accent: #238636;
-  --accent-soft: #e7f4ea;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #e9eef3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.app { width: 100%; padding: 16px; }
-
-.terminal,
-.card {
-  width: 100%;
-  max-width: 620px;
-  margin: auto;
-  background: #ffffff;
-  border-radius: 30px;
-  padding: 28px;
-  text-align: center;
-  box-shadow: 0 12px 35px rgba(0,0,0,.20);
-  border-top: 10px solid var(--accent);
-}
-
-.top,
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.admin-open,
-.admin-link {
-  border: 0;
-  background: #edf1f5;
-  border-radius: 14px;
-  padding: 10px 14px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.version {
-  color: #777;
-  font-size: 14px;
-}
-
-h1 {
-  margin: 8px 0 4px;
-  font-size: 44px;
-  letter-spacing: .5px;
-}
-
-.employee-badge {
-  display: inline-block;
-  margin: 8px 0 2px;
-  padding: 9px 16px;
-  border-radius: 999px;
-  font-size: 20px;
-  font-weight: 800;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.clock {
-  font-size: 44px;
-  font-weight: 800;
-  margin: 10px 0 22px;
-}
-
-.label {
-  display: block;
-  text-align: left;
-  font-size: 19px;
-  font-weight: 700;
-  margin: 12px 0 6px;
-}
-
-.select, .input {
-  width: 100%;
-  font-size: 25px;
-  padding: 15px;
-  border-radius: 16px;
-  border: 2px solid #cfd6dd;
-  background: white;
-}
-
-.select:focus,
-.input:focus {
-  outline: 3px solid var(--accent-soft);
-  border-color: var(--accent);
-}
-
-.pin-display,
-.pin-input {
-  margin: 18px auto 12px;
-  width: 190px;
-  padding: 14px;
-  border-radius: 18px;
-  border: 0;
-  background: #f4f6f8;
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: 8px;
-  text-align: center;
-}
-
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
-  margin-bottom: 18px;
-}
-
-.keypad button {
-  border: 0;
-  border-radius: 18px;
-  padding: 17px;
-  font-size: 28px;
-  font-weight: 800;
-  background: #edf1f5;
-  cursor: pointer;
-}
-
-.keypad button:active {
-  transform: scale(.98);
-  background: var(--accent-soft);
-}
-
-.big,
-.btn {
-  width: 100%;
-  border: 0;
-  border-radius: 24px;
-  padding: 29px 14px;
-  margin: 13px 0;
-  font-size: 39px;
-  font-weight: 900;
-  color: white;
-}
-
-.arrival,
-.arrivee {
-  background: var(--accent);
-}
-
-.departure,
-.depart {
-  background: #d1242f;
-}
-
-.big:disabled,
-.btn:disabled {
-  opacity: .25;
-  filter: grayscale(90%);
-}
-
-.message {
-  min-height: 34px;
-  font-size: 25px;
-  font-weight: 800;
-  margin-top: 15px;
-}
-
-.last,
-.last-card {
-  margin-top: 18px;
-  border-radius: 18px;
-  background: #f6f7f8;
-  padding: 14px;
-}
-
-.last-title {
-  color: #666;
-  font-size: 18px;
-  margin-bottom: 6px;
-}
-
-#lastClocking,
-.dernier {
-  font-size: 23px;
-  font-weight: 800;
-  white-space: pre-line;
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  padding: 18px;
-  background: rgba(0,0,0,.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hidden { display: none !important; }
-
-.panel,
-.modal-content {
-  width: 100%;
-  max-width: 640px;
-  max-height: 92vh;
-  overflow: auto;
-  background: white;
-  border-radius: 26px;
-  padding: 24px;
-}
-
-.close {
-  float: right;
-  border: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  font-size: 28px;
-  background: #eee;
-}
-
-.admin-button,
-.btn-small {
-  width: 100%;
-  border: 0;
-  border-radius: 18px;
-  padding: 17px;
-  margin-top: 16px;
-  background: #1f5fbf;
-  color: white;
-  font-size: 24px;
-  font-weight: 800;
-}
-
-.check,
-.checkline {
-  display: block;
-  text-align: left;
-  font-size: 21px;
-  margin: 14px 0;
-}
-
-.admin-message {
-  min-height: 28px;
-  margin: 12px 0;
-  font-weight: 800;
-  font-size: 20px;
-}
-
-.employee-list,
-.liste-employes {
-  text-align: left;
-  background: #f6f7f8;
-  border-radius: 14px;
-  padding: 12px;
-  font-size: 20px;
-  line-height: 1.6;
-}
-
-.employee-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.color-dot {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-}
+:root { --accent: #238636; --accent-soft: #e7f4ea; }
+body { margin: 0; min-height: 100vh; font-family: Arial, Helvetica, sans-serif; background: #e9eef3; display:flex; align-items:center; justify-content:center; }
+.app { width:100%; padding:16px; }
+.terminal,.card { width:100%; max-width:620px; margin:auto; background:#fff; border-radius:30px; padding:28px; text-align:center; box-shadow:0 12px 35px rgba(0,0,0,.20); border-top:10px solid var(--accent); }
+.top,.topbar { display:flex; justify-content:space-between; align-items:center; }
+.admin-open,.admin-link { border:0; background:#edf1f5; border-radius:14px; padding:10px 14px; font-size:16px; cursor:pointer; }
+.version { color:#777; font-size:14px; }
+h1 { margin:8px 0 4px; font-size:44px; letter-spacing:.5px; }
+.employee-badge { display:inline-block; margin:8px 0 2px; padding:9px 16px; border-radius:999px; font-size:20px; font-weight:800; background:var(--accent-soft); color:var(--accent); }
+.clock { font-size:44px; font-weight:800; margin:10px 0 22px; }
+.label { display:block; text-align:left; font-size:19px; font-weight:700; margin:12px 0 6px; }
+.select,.input { width:100%; font-size:25px; padding:15px; border-radius:16px; border:2px solid #cfd6dd; background:white; }
+.select:focus,.input:focus { outline:3px solid var(--accent-soft); border-color:var(--accent); }
+.color-input { height:62px; padding:8px; }
+.pin-display,.pin-input { margin:18px auto 12px; width:190px; padding:14px; border-radius:18px; border:0; background:#f4f6f8; font-size:34px; font-weight:800; letter-spacing:8px; text-align:center; }
+.keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:18px; }
+.keypad button { border:0; border-radius:18px; padding:17px; font-size:28px; font-weight:800; background:#edf1f5; cursor:pointer; }
+.keypad button:active { transform:scale(.98); background:var(--accent-soft); }
+.big,.btn { width:100%; border:0; border-radius:24px; padding:29px 14px; margin:13px 0; font-size:39px; font-weight:900; color:white; }
+.arrival,.arrivee { background:var(--accent); }
+.departure,.depart { background:#d1242f; }
+.big:disabled,.btn:disabled { opacity:.25; filter:grayscale(90%); }
+.message { min-height:34px; font-size:25px; font-weight:800; margin-top:15px; }
+.last,.last-card { margin-top:18px; border-radius:18px; background:#f6f7f8; padding:14px; }
+.last-title { color:#666; font-size:18px; margin-bottom:6px; }
+#lastClocking,.dernier { font-size:23px; font-weight:800; white-space:pre-line; }
+.modal { position:fixed; inset:0; padding:18px; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; }
+.hidden { display:none!important; }
+.panel,.modal-content { width:100%; max-width:680px; max-height:92vh; overflow:auto; background:white; border-radius:26px; padding:24px; }
+.close { float:right; border:0; width:42px; height:42px; border-radius:50%; font-size:28px; background:#eee; }
+.admin-button,.btn-small { width:100%; border:0; border-radius:18px; padding:17px; margin-top:16px; background:#1f5fbf; color:white; font-size:24px; font-weight:800; }
+.check,.checkline { display:block; text-align:left; font-size:21px; margin:14px 0; }
+.admin-message { min-height:28px; margin:12px 0; font-weight:800; font-size:20px; }
+.employee-list,.liste-employes { text-align:left; background:#f6f7f8; border-radius:14px; padding:12px; font-size:20px; line-height:1.6; }
+.employee-item { display:flex; align-items:center; gap:10px; margin:4px 0; }
+.color-dot { display:inline-block; width:14px; height:14px; border-radius:50%; }
+.inactive { opacity:.55; text-decoration: line-through; }
+.tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:16px 0; }
+.tab { border:0; border-radius:14px; padding:14px; font-size:20px; font-weight:800; background:#edf1f5; }
+.tab.active { background:#1f5fbf; color:white; }
+.hint { font-size:14px; color:#777; font-weight:400; }
