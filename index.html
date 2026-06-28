@@ -11,7 +11,7 @@
   <section class="terminal">
     <div class="top">
       <button class="admin-open" onclick="openAdmin()">⚙ Admin</button>
-      <div class="version">v3.3</div>
+      <div class="version">v3.4</div>
     </div>
 
     <h1>Pointeuse MC</h1>
@@ -55,6 +55,7 @@
     <div class="tabs">
       <button onclick="showAdminTab('add')" id="tabAdd" class="tab active">Ajouter</button>
       <button onclick="showAdminTab('edit')" id="tabEdit" class="tab">Modifier</button>
+      <button onclick="showAdminTab('export')" id="tabExport" class="tab">Export</button>
     </div>
 
     <div id="adminAdd">
@@ -83,6 +84,21 @@
       <label class="check"><input id="editActive" type="checkbox"> Actif</label>
       <label class="check"><input id="editAdmin" type="checkbox"> Administrateur</label>
       <button class="admin-button" onclick="updateEmployee()">Enregistrer les modifications</button>
+    </div>
+
+    <div id="adminExport" class="hidden">
+      <h3>Exporter les heures</h3>
+
+      <label class="label">Mois</label>
+      <input id="exportMonth" class="input" type="month">
+
+      <label class="label">Employé</label>
+      <select id="exportEmployee" class="select">
+        <option value="">Tous les employés</option>
+      </select>
+
+      <button class="admin-button" onclick="exportCsv()">Exporter en CSV</button>
+      <div id="exportResult" class="export-result"></div>
     </div>
 
     <div id="adminMessage" class="admin-message"></div>

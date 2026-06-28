@@ -98,15 +98,29 @@ function renderEmployeeList() {
 
 function populateEditSelect() {
   const s = $("editEmployeeSelect");
-  if (!s) return;
-  s.innerHTML = "";
-  employees.forEach(e => {
-    const o = document.createElement("option");
-    o.value = e.id;
-    o.textContent = e.name;
-    s.appendChild(o);
-  });
-  loadEmployeeForEdit();
+  if (s) {
+    s.innerHTML = "";
+    employees.forEach(e => {
+      const o = document.createElement("option");
+      o.value = e.id;
+      o.textContent = e.name;
+      s.appendChild(o);
+    });
+    loadEmployeeForEdit();
+  }
+
+  const exportSelect = $("exportEmployee");
+  if (exportSelect) {
+    const current = exportSelect.value;
+    exportSelect.innerHTML = '<option value="">Tous les employés</option>';
+    employees.forEach(e => {
+      const o = document.createElement("option");
+      o.value = e.id;
+      o.textContent = e.name;
+      exportSelect.appendChild(o);
+    });
+    exportSelect.value = current;
+  }
 }
 
 function loadEmployeeForEdit() {
@@ -157,8 +171,13 @@ function closeAdmin() { $("adminModal").classList.add("hidden"); }
 function showAdminTab(tab) {
   $("adminAdd").classList.toggle("hidden", tab !== "add");
   $("adminEdit").classList.toggle("hidden", tab !== "edit");
+  $("adminExport").classList.toggle("hidden", tab !== "export");
+
   $("tabAdd").classList.toggle("active", tab === "add");
   $("tabEdit").classList.toggle("active", tab === "edit");
+  $("tabExport").classList.toggle("active", tab === "export");
+
+  if (tab === "export") prepareExportTab();
 }
 
 async function addEmployee() {
@@ -214,6 +233,58 @@ async function updateEmployee() {
     }
   } catch(e) {
     $("adminMessage").innerText = "Erreur modification";
+  }
+}
+
+
+function prepareExportTab() {
+  const monthInput = $("exportMonth");
+  if (monthInput && !monthInput.value) {
+    const d = new Date();
+    monthInput.value = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  }
+  populateEditSelect();
+}
+
+async function exportCsv() {
+  const adminPassword = $("adminPassword").value;
+  const month = $("exportMonth").value;
+  const employeeId = $("exportEmployee").value;
+  const resultZone = $("exportResult");
+
+  if (!adminPassword) {
+    resultZone.innerText = "Mot de passe admin requis.";
+    return;
+  }
+
+  if (!month) {
+    resultZone.innerText = "Choisis un mois.";
+    return;
+  }
+
+  resultZone.innerText = "Préparation de l'export...";
+
+  try {
+    const result = await jsonp({
+      action: "exportCsv",
+      adminPassword,
+      month,
+      employeeId
+    });
+
+    if (!result || !result.ok) {
+      resultZone.innerText = "Erreur export : " + (result && result.error ? result.error : "inconnue");
+      return;
+    }
+
+    const blob = new Blob([result.csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    resultZone.innerHTML =
+      `<a download="${result.filename}" href="${url}">Télécharger ${result.filename}</a><br>` +
+      `${result.rows} ligne(s) exportée(s).`;
+  } catch (e) {
+    resultZone.innerText = "Erreur export.";
   }
 }
 
