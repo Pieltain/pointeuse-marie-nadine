@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pointeuse MC</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <section class="terminal">
+    <div class="top">
+      <button class="admin-open" onclick="openAdmin()">⚙ Admin</button>
+      <div class="version">v3.9 LTS</div>
+    </div>
+
+    <h1>Pointeuse MC</h1>
+    <div id="employeeBadge" class="employee-badge">—</div>
+    <div id="clock" class="clock">--:--:--</div>
+
+    <label class="label" for="employeeSelect">Employé</label>
+    <select id="employeeSelect" class="select" onchange="onEmployeeChange()">
+      <option>Chargement...</option>
+    </select>
+
+    <div class="pin-display" id="pinDisplay">----</div>
+
+    <div class="keypad">
+      <button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button onclick="pressKey('3')">3</button>
+      <button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button onclick="pressKey('6')">6</button>
+      <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button onclick="pressKey('9')">9</button>
+      <button onclick="clearPin()">C</button><button onclick="pressKey('0')">0</button><button onclick="backspacePin()">⌫</button>
+    </div>
+
+    <button id="arrivalBtn" class="big arrival" onclick="clockAction('Arrivée')" disabled>ARRIVÉE</button>
+    <button id="departureBtn" class="big departure" onclick="clockAction('Départ')" disabled>DÉPART</button>
+
+    <div id="message" class="message">Chargement...</div>
+
+    <div class="last">
+      <div class="last-title">Dernier pointage</div>
+      <div id="lastClocking">—</div>
+    </div>
+  </section>
+</main>
+
+<div id="adminModal" class="modal hidden">
+  <section class="panel">
+    <button class="close" onclick="closeAdmin()">×</button>
+    <h2>Administration</h2>
+
+    <label class="label">Mot de passe admin</label>
+    <input id="adminPassword" class="input" type="password" inputmode="numeric">
+
+    <div class="tabs">
+      <button onclick="showAdminTab('add')" id="tabAdd" class="tab active">Ajouter</button>
+      <button onclick="showAdminTab('edit')" id="tabEdit" class="tab">Modifier</button>
+      <button onclick="showAdminTab('export')" id="tabExport" class="tab">Export</button>
+    </div>
+
+    <div id="adminAdd">
+      <h3>Ajouter un employé</h3>
+      <label class="label">Nom</label>
+      <input id="newName" class="input" type="text">
+      <label class="label">PIN</label>
+      <input id="newPin" class="input" type="text" inputmode="numeric" maxlength="6">
+      <label class="label">Couleur</label>
+      <input id="newColor" class="input color-input" type="color" value="#218838">
+      <label class="check"><input id="newActive" type="checkbox" checked> Actif</label>
+      <label class="check"><input id="newAdmin" type="checkbox"> Administrateur</label>
+      <button class="admin-button" onclick="addEmployee()">Ajouter</button>
+    </div>
+
+    <div id="adminEdit" class="hidden">
+      <h3>Modifier un employé</h3>
+      <label class="label">Employé</label>
+      <select id="editEmployeeSelect" class="select" onchange="loadEmployeeForEdit()"></select>
+      <label class="label">Nom</label>
+      <input id="editName" class="input" type="text">
+      <label class="label">Nouveau PIN <span class="hint">(laisser vide pour ne pas changer)</span></label>
+      <input id="editPin" class="input" type="text" inputmode="numeric" maxlength="6">
+      <label class="label">Couleur</label>
+      <input id="editColor" class="input color-input" type="color">
+      <label class="check"><input id="editActive" type="checkbox"> Actif</label>
+      <label class="check"><input id="editAdmin" type="checkbox"> Administrateur</label>
+      <button class="admin-button" onclick="updateEmployee()">Enregistrer les modifications</button>
+    </div>
+
+    <div id="adminExport" class="hidden">
+      <h3>Exporter les heures</h3>
+
+      <label class="label">Mois</label>
+      <input id="exportMonth" class="input" type="month">
+
+      <label class="label">Employé</label>
+      <select id="exportEmployee" class="select">
+        <option value="">Tous les employés</option>
+      </select>
+
+      <button class="admin-button" onclick="exportCsv()">Exporter en CSV</button>
+      <div id="exportResult" class="export-result"></div>
+    </div>
+
+    <div id="adminMessage" class="admin-message"></div>
+
+    <h3>Employés</h3>
+    <div id="employeeList" class="employee-list">—</div>
+  </section>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
